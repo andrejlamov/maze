@@ -6,6 +6,9 @@ var right = 2;
 var up = 4;
 var down = 8;
 
+var w = c.width;
+var h = c.height;
+
 function init() {
     var rows = 10;
     var cols = 10;
@@ -23,11 +26,16 @@ function init() {
 		cell = cell | left;
 	    if (c == cols - 1)
 		cell = cell | right;
+
 	    matrix[r].push(cell);
+
+	    cx.fillStyle = (c+r) % 2 == 0 ? "blue" : "red";
+	    var part = w / 10;
+	    cx.fillRect(r * part, c * part,
+			r * part + part, c * part + part);
 	}
 	console.log(matrix[matrix.length -1 ]);
     }
-    alert(matrix);
 }
 
 function animate() {
