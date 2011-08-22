@@ -5,6 +5,7 @@ var left = 1;
 var right = 2;
 var up = 4;
 var down = 8;
+var visited = 16;
 
 var inaccess = left | right | up | down;
 
@@ -47,14 +48,17 @@ function init() {
 
 function makePath(x,y) {
     var neighbours = [];
-    
-    if(x > 1 && matrix[x-1][y] == inaccess) {
-	neighbours.push(matrix[x-1][y]);
-	matrix[x][y-1] = inaccess & ~right;
-	matrix[x][y] = inaccess & ~left;
-    }
-    
-    console.log(neighbours);
+    if(matrix[x][y] & visited)
+	return;
+    matrix[x][y] |= visited;
+    if(x > 0)
+	makePath(x-1, y);
+    if(x < rows-1)
+	makePath(x+1, y);
+    if(y > 0)
+	makePath(x, y-1);
+    if(y < rows-1)
+	makePath(x, y+1);
 }
 
 
