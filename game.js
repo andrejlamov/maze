@@ -1,4 +1,4 @@
-var c = document.getElementById("theCanvas")
+var c = document.getElementById("theCanvas");
 var cx = c.getContext("2d");
 
 var left = 1;
@@ -22,17 +22,6 @@ function init() {
 	matrix.push([]);
 	for(var c = 0; c < cols; c++) {
 	    var cell = up | down | left | right;
-	    /*
-	    if (r == 0)
-		cell = cell | up;
-	    if (r == rows - 1)
-		cell = cell | down;
-	    if (c == 0)
-		cell = cell | left;
-	    if (c == cols - 1)
-		cell = cell | right;
-	    */
-
 	    matrix[r].push(cell);
 	}
     }
@@ -42,46 +31,40 @@ function init() {
 	for(var y = 0; y < matrix[x].length; y++) {
 	    drawCell(y, x, matrix[x][y]);
 	}
-	console.log(matrix[x]);
     }
 }
 
 function makePath(x,y) {
     matrix[x][y] |= visited;
 
-    var upf = function() {  if(x > 0) {
-	if((matrix[x-1][y] & visited) == 0) {
+    var upf = function() {
+	if(x > 0 && (matrix[x-1][y] & visited) == 0) {
 	    matrix[x][y] &= ~up;
 	    matrix[x-1][y] &= ~down;
 	    makePath(x-1, y)
 	}
-	}}
-
-    var downf = function() {  if(x < rows-1) {
-	if((matrix[x+1][y] & visited) == 0) {
-	    console.log("up");
+    }
+    var downf = function() {
+	if(x < rows-1 && (matrix[x+1][y] & visited) == 0) {
 	    matrix[x][y] &= ~down;
 	    matrix[x+1][y] &= ~up;
 	    makePath(x+1, y)
 	}
-	}}
-
-    var rightf= function() {if(y < cols-1) {
-	if((matrix[x][y+1] & visited) == 0) {
-	    console.log("right");
+    }
+    var rightf= function() {
+	if(y < cols-1 && (matrix[x][y+1] & visited) == 0) {
 	    matrix[x][y] &= ~right;
 	    matrix[x][y+1] &= ~left;
 	    makePath(x, y+1);
 	}
-	}}
-    var leftf= function() {if(y > 0) {
-	if((matrix[x][y-1] & visited) == 0) {
-	    console.log("right");
+    }
+    var leftf= function() {
+	if(y > 0 && (matrix[x][y-1] & visited) == 0) {
 	    matrix[x][y] &= ~left;
 	    matrix[x][y-1] &= ~right;
 	    makePath(x, y-1);
 	}
-	}}
+    }
     
     var dirs = [upf, rightf, downf, leftf];
     dirs.sort(function() { return Math.round(Math.random()) - 0.5 });
@@ -106,10 +89,5 @@ function drawCell(x, y, status) {
     maybeDraw(x * part, y * part, status & left);
     cx.stroke();
 }
-
-function animate() {
-
-}
-
 
 init();
