@@ -47,18 +47,49 @@ function init() {
 }
 
 function makePath(x,y) {
-    var neighbours = [];
-    if(matrix[x][y] & visited)
-	return;
     matrix[x][y] |= visited;
-    if(x > 0)
-	makePath(x-1, y);
-    if(x < rows-1)
-	makePath(x+1, y);
-    if(y > 0)
-	makePath(x, y-1);
-    if(y < rows-1)
-	makePath(x, y+1);
+
+    var upf = function() {  if(x > 0) {
+	if((matrix[x-1][y] & visited) == 0) {
+	    matrix[x][y] &= ~up;
+	    matrix[x-1][y] &= ~down;
+	    makePath(x-1, y)
+	}
+	}}
+
+    var downf = function() {  if(x < rows-1) {
+	if((matrix[x+1][y] & visited) == 0) {
+	    console.log("up");
+	    matrix[x][y] &= ~down;
+	    matrix[x+1][y] &= ~up;
+	    makePath(x+1, y)
+	}
+	}}
+
+    var rightf= function() {if(y < cols-1) {
+	if((matrix[x][y+1] & visited) == 0) {
+	    console.log("right");
+	    matrix[x][y] &= ~right;
+	    matrix[x][y+1] &= ~left;
+	    makePath(x, y+1);
+	}
+	}}
+    var leftf= function() {if(y > 0) {
+	if((matrix[x][y-1] & visited) == 0) {
+	    console.log("right");
+	    matrix[x][y] &= ~left;
+	    matrix[x][y-1] &= ~right;
+	    makePath(x, y-1);
+	}
+	}}
+    
+    var dirs = [upf, rightf, downf, leftf];
+    dirs.sort(function() { return Math.round(Math.random()) - 0.5 });
+    for(var i = 0; i < dirs.length; i++) {
+	if(dirs[i]())
+	    return true;
+    }
+    return true;
 }
 
 
