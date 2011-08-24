@@ -45,13 +45,13 @@ function repaint() {
 function keydownhandler(e) {
     var char = String.fromCharCode(e.which);
     var direction = 0;
-    if (char == "W") {
+    if (char == "W" && !(matrix[dx][dy] & up)) {
 	dy--;
-    } else if (char == "A") {
+    } else if (char == "A" && !(matrix[dx][dy] & left)) {
 	dx--;
-    } else if (char == "S") {
+    } else if (char == "S" && !(matrix[dx][dy] & down)) {
 	dy++;
-    } else if (char == "D") {
+    } else if (char == "D" && !(matrix[dx][dy] & right)) {
 	dx++;
     }
     repaint();
