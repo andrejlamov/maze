@@ -120,7 +120,7 @@ function drawCell(x, y, status) {
 
 function drawDude() {
     cx.fillStyle = "rgb(200,0,0)";
-    cx.fillRect(dx * wpx, dy * hpx, wpx, hpx);
+    cx.fillRect(dx * wpx + 4, dy * hpx + 4, wpx - 8, hpx - 8);
 }
 
 init();
