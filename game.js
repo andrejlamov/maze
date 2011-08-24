@@ -89,7 +89,7 @@ function makePath(x,y) {
 	}
     }
   
-    var dirs = [upf, rightf, downf, leftf];
+    var dirs = [upf, downf, rightf, leftf];
     dirs.sort(function() { return Math.round(Math.random()) - 0.5 });
     for(var i = 0; i < dirs.length; i++) {
 	dirs[i]()
