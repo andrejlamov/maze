@@ -18,6 +18,8 @@ var hpx = h / rows;
 
 var matrix = [];
 
+
+
 function init() {
     for(var x = 0; x < cols; x++) {
 	matrix.push([]);
@@ -26,8 +28,23 @@ function init() {
 	    matrix[x].push(cell);
 	}
     }
+    document.onkeydown = keydownhandler;
     makePath(0,0);
     drawMaze();
+}
+
+function keydownhandler(e) {
+    var char = String.fromCharCode(e.which);
+    var direction = 0;
+    if (char == "W") {
+	direction = up;
+    } else if (char == "A") {
+	direction = left;
+    } else if (char == "S") {
+	direction = down;
+    } else if (char == "D") {
+	direction = right;
+    }
 }
 
 function makePath(x,y) {
