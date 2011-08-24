@@ -16,6 +16,9 @@ var cols = 20;
 var wpx = w / cols;
 var hpx = h / rows;
 
+var dx = 0;
+var dy = 0;
+
 var matrix = [];
 
 
@@ -30,21 +33,28 @@ function init() {
     }
     document.onkeydown = keydownhandler;
     makePath(0,0);
+    repaint();
+}
+
+function repaint() {
+    cx.clearRect(0,0,w, h);
     drawMaze();
+    drawDude();
 }
 
 function keydownhandler(e) {
     var char = String.fromCharCode(e.which);
     var direction = 0;
     if (char == "W") {
-	direction = up;
+	dy--;
     } else if (char == "A") {
-	direction = left;
+	dx--;
     } else if (char == "S") {
-	direction = down;
+	dy++;
     } else if (char == "D") {
-	direction = right;
+	dx++;
     }
+    repaint();
 }
 
 function makePath(x,y) {
@@ -106,6 +116,11 @@ function drawCell(x, y, status) {
     maybeDraw(x * wpx, y * hpx + hpx, status & down);
     maybeDraw(x * wpx, y * hpx, status & left);
     cx.stroke();
+}
+
+function drawDude() {
+    cx.fillStyle = "rgb(200,0,0)";
+    cx.fillRect(dx * wpx, dy * hpx, wpx, hpx);
 }
 
 init();
