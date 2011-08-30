@@ -80,7 +80,7 @@ function makePath(x,y) {
 	    matrix[x+1][y] &= ~left;
 	    makePath(x+1, y);
 	}
-    }
+   }
     var leftf= function() {
 	if(x > 0 && (matrix[x-1][y] & visited) == 0) {
 	    matrix[x][y] &= ~left;
@@ -98,24 +98,30 @@ function makePath(x,y) {
 
 
 function drawMaze() {
+    cx.save();
+    cx.translate(wpx/2, hpx/2);
     for(var x = 0; x < cols; x++) {
 	for(var y = 0; y < rows; y++) {
 	    drawCell(x, y, matrix[x][y]);
 	}
     }
+    cx.restore();
 }
 
 function drawCell(x, y, status) {
     function maybeDraw(x, y, maybe) {
 	maybe ? cx.lineTo(x, y) : cx.moveTo(x, y);
     }
+    cx.save();
+    cx.translate(x * wpx, y * hpx);
     cx.beginPath();
-    maybeDraw(x * wpx, y * hpx, false);
-    maybeDraw(x * wpx + wpx, y * hpx, status & up);
-    maybeDraw(x * wpx + wpx, y * hpx + hpx, status & right);
-    maybeDraw(x * wpx, y * hpx + hpx, status & down);
-    maybeDraw(x * wpx, y * hpx, status & left);
+    maybeDraw(-wpx/2, -hpx/2, false);
+    maybeDraw(wpx/2, -hpx/2, status & up);
+    maybeDraw(wpx/2, hpx/2, status & right);
+    maybeDraw(-wpx/2, hpx/2, status & down);
+    maybeDraw(-wpx/2, -hpx/2, status & left);
     cx.stroke();
+    cx.restore();
 }
 
 function drawDude() {
