@@ -130,6 +130,9 @@ function drawDude() {
     cx.save();
     cx.translate(dx * wpx / 2 - dy * wpx / 2, dx * hpx / 2 + dy * hpx / 2);
     cx.fillRect(-wpx/4, -hpx, 2 * wpx/4,  hpx);
+    cx.fillStyle = "rgb(0, 0, 0)";
+    cx.fillRect(-wpx/6, -hpx/1.2 ,wpx /5, hpx / 3);
+    cx.fillRect(wpx/9, -hpx/1.2  ,wpx /5, hpx / 3);
     cx.restore();
 }
 
