@@ -40,7 +40,7 @@ function repaint() {
     cx.clearRect(0,0,w, h);
 
     cx.save();
-    cx.translate(w / 2, hpx / 2);
+    cx.translate(w / 2, h / 4);
     drawMaze();
     drawDude();
     cx.restore();
