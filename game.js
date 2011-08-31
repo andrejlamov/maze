@@ -14,7 +14,7 @@ var rows = 20;
 var cols = 20;
 
 var wpx = w / cols;
-var hpx = h / rows;
+var hpx = h / rows / 2;
 
 var dx = 0;
 var dy = 0;
@@ -38,8 +38,11 @@ function init() {
 
 function repaint() {
     cx.clearRect(0,0,w, h);
+
+    cx.save();
+    cx.translate(w / 2, hpx / 2);
     drawMaze();
-    drawDude();
+    cx.restore();
 }
 
 function keydownhandler(e) {
@@ -98,14 +101,11 @@ function makePath(x,y) {
 
 
 function drawMaze() {
-    cx.save();
-    cx.translate(wpx/2, hpx/2);
     for(var x = 0; x < cols; x++) {
 	for(var y = 0; y < rows; y++) {
 	    drawCell(x, y, matrix[x][y]);
 	}
     }
-    cx.restore();
 }
 
 function drawCell(x, y, status) {
@@ -113,13 +113,13 @@ function drawCell(x, y, status) {
 	maybe ? cx.lineTo(x, y) : cx.moveTo(x, y);
     }
     cx.save();
-    cx.translate(x * wpx, y * hpx);
+    cx.translate(x * wpx / 2 - y * wpx / 2, x * hpx / 2 + y * hpx / 2);
     cx.beginPath();
-    maybeDraw(-wpx/2, -hpx/2, false);
-    maybeDraw(wpx/2, -hpx/2, status & up);
-    maybeDraw(wpx/2, hpx/2, status & right);
-    maybeDraw(-wpx/2, hpx/2, status & down);
-    maybeDraw(-wpx/2, -hpx/2, status & left);
+    maybeDraw(0, -hpx/2, false);
+    maybeDraw(wpx/2, 0, status & up);
+    maybeDraw(0, hpx/2, status & right);
+    maybeDraw(-wpx/2, 0, status & down);
+    maybeDraw(0, -hpx/2, status & left);
     cx.stroke();
     cx.restore();
 }
