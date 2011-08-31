@@ -42,6 +42,7 @@ function repaint() {
     cx.save();
     cx.translate(w / 2, hpx / 2);
     drawMaze();
+    drawDude();
     cx.restore();
 }
 
@@ -126,7 +127,10 @@ function drawCell(x, y, status) {
 
 function drawDude() {
     cx.fillStyle = "rgb(200,0,0)";
-    cx.fillRect(dx * wpx + 4, dy * hpx + 4, wpx - 8, hpx - 8);
+    cx.save();
+    cx.translate(dx * wpx / 2 - dy * wpx / 2, dx * hpx / 2 + dy * hpx / 2);
+    cx.fillRect(-wpx/4, -hpx, 2 * wpx/4,  hpx);
+    cx.restore();
 }
 
 init();
