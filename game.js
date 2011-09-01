@@ -124,8 +124,8 @@ function drawCell(x, y, status) {
 	    cx.closePath();
 	    cx.fill();
 	    cx.beginPath();
-	    cx.moveTo(x, y);
-	    cx.lineTo(px, py);
+	    cx.moveTo(x, y - hpx/2);
+	    cx.lineTo(px, py -hpx/2);
 	    cx.stroke();
 	} else {
 	    cx.moveTo(x, y);
@@ -135,7 +135,7 @@ function drawCell(x, y, status) {
     }
     cx.save();
     cx.lineWidth = 2;
-    cx.strokeStyle = "rgb(140, 140, 140)";
+    cx.strokeStyle = "rgb(230, 230, 230)";
     cx.translate(x * wpx / 2 - y * wpx / 2, x * hpx / 2 + y * hpx / 2);
     maybeDraw(0, -hpx/2, wpx/2, 0, up);
     maybeDraw(-wpx/2, 0, 0, -hpx/2, left);
