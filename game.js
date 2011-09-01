@@ -10,8 +10,8 @@ var visited = 16;
 var w = c.width;
 var h = c.height;
 
-var rows = 10;
-var cols = 10;
+var rows = 20;
+var cols = 20;
 
 var wpx = w / cols;
 var hpx = h / rows / 2;
@@ -123,6 +123,10 @@ function drawCell(x, y, status) {
 	    cx.lineTo(x, y)
 	    cx.closePath();
 	    cx.fill();
+	    cx.beginPath();
+	    cx.moveTo(x, y);
+	    cx.lineTo(px, py);
+	    cx.stroke();
 	} else {
 	    cx.moveTo(x, y);
 	}
@@ -130,6 +134,8 @@ function drawCell(x, y, status) {
 	py = y;
     }
     cx.save();
+    cx.lineWidth = 2;
+    cx.strokeStyle = "rgb(140, 140, 140)";
     cx.translate(x * wpx / 2 - y * wpx / 2, x * hpx / 2 + y * hpx / 2);
     maybeDraw(0, -hpx/2, wpx/2, 0, up);
     maybeDraw(-wpx/2, 0, 0, -hpx/2, left);
