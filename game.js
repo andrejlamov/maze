@@ -42,7 +42,6 @@ function repaint() {
     cx.save();
     cx.translate(w / 2, h / 4);
     drawMaze();
-    drawDude();
     cx.restore();
 }
 
@@ -110,18 +109,32 @@ function drawMaze() {
 }
 
 function drawCell(x, y, status) {
+    var px = 0;
+    var py = -hpx / 2;
     function maybeDraw(x, y, maybe) {
-	maybe ? cx.lineTo(x, y) : cx.moveTo(x, y);
+	if(maybe) {
+	    cx.beginPath();
+	    cx.moveTo(px, py);
+	    cx.lineTo(px, py - hpx/2);
+	    cx.lineTo(x, y - hpx/2);
+	    cx.lineTo(x, y)
+
+	    cx.closePath();
+	    cx.fill();
+	    cx.stroke();
+	} else {
+	    cx.moveTo(x, y);
+	}
+	px = x;
+	py = y;
     }
     cx.save();
     cx.translate(x * wpx / 2 - y * wpx / 2, x * hpx / 2 + y * hpx / 2);
-    cx.beginPath();
-    maybeDraw(0, -hpx/2, false);
+    cx.fillStyle = "rgb(150,150,150)";
     maybeDraw(wpx/2, 0, status & up);
     maybeDraw(0, hpx/2, status & right);
     maybeDraw(-wpx/2, 0, status & down);
     maybeDraw(0, -hpx/2, status & left);
-    cx.stroke();
     cx.restore();
 }
 
