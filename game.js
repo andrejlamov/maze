@@ -38,9 +38,9 @@ function init() {
 
 function repaint() {
     cx.clearRect(0,0,w, h);
-
     cx.save();
     cx.translate(w / 2, h / 4);
+    drawFloor();
     drawMaze();
     cx.restore();
 }
@@ -108,6 +108,17 @@ function drawMaze() {
     }
 }
 
+function drawFloor() {
+    cx.beginPath();
+    cx.moveTo(0,-hpx/2);
+    cx.lineTo(wpx/2 * cols, hpx/2 * cols - hpx/2);
+    cx.lineTo(0, hpx * rows - hpx/2);
+    cx.lineTo(-wpx/2 * cols, hpx/2 * cols - hpx/2);
+    cx.closePath();
+    cx.fillStyle = "rgb(240, 240, 240)";
+    cx.fill();
+}
+
 function drawCell(x, y, status) {
     function maybeDraw(px, py, x, y, maybe) {
     if (maybe & (left | right)) {
@@ -130,8 +141,6 @@ function drawCell(x, y, status) {
 	} else {
 	    cx.moveTo(x, y);
 	}
-	px = x;
-	py = y;
     }
     cx.save();
     cx.lineWidth = 2;
