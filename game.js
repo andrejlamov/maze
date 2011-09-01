@@ -10,8 +10,8 @@ var visited = 16;
 var w = c.width;
 var h = c.height;
 
-var rows = 20;
-var cols = 20;
+var rows = 10;
+var cols = 10;
 
 var wpx = w / cols;
 var hpx = h / rows / 2;
@@ -91,7 +91,7 @@ function makePath(x,y) {
 	    makePath(x-1, y);
 	}
     }
-  
+
     var dirs = [upf, downf, rightf, leftf];
     dirs.sort(function() { return Math.round(Math.random()) - 0.5 });
     for(var i = 0; i < dirs.length; i++) {
@@ -109,19 +109,20 @@ function drawMaze() {
 }
 
 function drawCell(x, y, status) {
-    var px = 0;
-    var py = -hpx / 2;
-    function maybeDraw(x, y, maybe) {
-	if(maybe) {
+    function maybeDraw(px, py, x, y, maybe) {
+    if (maybe & (left | right)) {
+	cx.fillStyle = "rgb(200,200,200)";
+    } else {
+	cx.fillStyle = "rgb(180,180,180)";
+    }
+	if(status & maybe) {
 	    cx.beginPath();
 	    cx.moveTo(px, py);
 	    cx.lineTo(px, py - hpx/2);
 	    cx.lineTo(x, y - hpx/2);
 	    cx.lineTo(x, y)
-
 	    cx.closePath();
 	    cx.fill();
-	    cx.stroke();
 	} else {
 	    cx.moveTo(x, y);
 	}
@@ -130,23 +131,22 @@ function drawCell(x, y, status) {
     }
     cx.save();
     cx.translate(x * wpx / 2 - y * wpx / 2, x * hpx / 2 + y * hpx / 2);
-    cx.fillStyle = "rgb(150,150,150)";
-    maybeDraw(wpx/2, 0, status & up);
-    maybeDraw(0, hpx/2, status & right);
-    maybeDraw(-wpx/2, 0, status & down);
-    maybeDraw(0, -hpx/2, status & left);
+    maybeDraw(0, -hpx/2, wpx/2, 0, up);
+    maybeDraw(-wpx/2, 0, 0, -hpx/2, left);
+    if(dx == x && dy == y) {
+	drawDude();
+    }
+    maybeDraw(0, hpx/2, -wpx/2, 0, down);
+    maybeDraw(wpx/2, 0, 0, hpx/2, right);
     cx.restore();
 }
 
 function drawDude() {
     cx.fillStyle = "rgb(200,0,0)";
-    cx.save();
-    cx.translate(dx * wpx / 2 - dy * wpx / 2, dx * hpx / 2 + dy * hpx / 2);
     cx.fillRect(-wpx/4, -hpx, 2 * wpx/4,  hpx);
     cx.fillStyle = "rgb(0, 0, 0)";
     cx.fillRect(-wpx/6, -hpx/1.2 ,wpx /5, hpx / 3);
     cx.fillRect(wpx/9, -hpx/1.2  ,wpx /5, hpx / 3);
-    cx.restore();
 }
 
 init();
