@@ -33,7 +33,7 @@ function init() {
     }
     document.onkeydown = keydownhandler;
     makePath(0,0);
-    repaint();
+    setInterval(repaint, 20);
 }
 
 function repaint() {
@@ -157,11 +157,14 @@ function drawCell(x, y, status) {
 }
 
 function drawDude() {
+    cx.save();
+    cx.translate(0, -hpx/6 + Math.sin((new Date()).getTime()/70) * hpx / 6);
     cx.fillStyle = "rgb(200,0,0)";
     cx.fillRect(-wpx/4, -hpx, 2 * wpx/4,  hpx);
     cx.fillStyle = "rgb(0, 0, 0)";
     cx.fillRect(-wpx/6, -hpx/1.2 ,wpx /5, hpx / 3);
     cx.fillRect(wpx/9, -hpx/1.2  ,wpx /5, hpx / 3);
+    cx.restore();
 }
 
 init();
