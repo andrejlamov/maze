@@ -33,6 +33,7 @@ function init() {
     }
     document.onkeydown = keydownhandler;
     makePath(0,0);
+    matrix[0][0] &= ~visited;
     repaint();
 }
 
@@ -40,7 +41,6 @@ function repaint() {
     cx.clearRect(0,0,w, h);
     cx.save();
     cx.translate(w / 2, h / 4);
-    drawFloor();
     drawMaze();
     cx.restore();
 }
@@ -57,6 +57,7 @@ function keydownhandler(e) {
     } else if (char == "D" && !(matrix[dx][dy] & right)) {
 	dx++;
     }
+    matrix[dx][dy] &= ~visited;
     repaint();
 }
 
@@ -146,6 +147,17 @@ function drawCell(x, y, status) {
     cx.lineWidth = 2;
     cx.strokeStyle = "rgb(230, 230, 230)";
     cx.translate(x * wpx / 2 - y * wpx / 2, x * hpx / 2 + y * hpx / 2);
+    cx.moveTo(0, -hpx/2);
+    cx.lineTo(wpx/2, 0);
+    cx.lineTo(0, hpx/2);
+    cx.lineTo(-wpx/2, 0);
+    cx.closePath();
+    if (status & visited) {
+	cx.fillStyle = "rgb(240,240,240)";
+    } else {
+	cx.fillStyle = "rgb(210,210,210)";
+    }
+    cx.fill();
     maybeDraw(0, -hpx/2, wpx/2, 0, up);
     maybeDraw(-wpx/2, 0, 0, -hpx/2, left);
     if(dx == x && dy == y) {
