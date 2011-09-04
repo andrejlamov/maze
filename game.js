@@ -101,9 +101,24 @@ function makePath(x,y) {
 
 
 function drawMaze() {
-    for(var x = 0; x < cols; x++) {
-	for(var y = 0; y < rows; y++) {
-	    drawCell(x, y, matrix[x][y]);
+    var x = 0;
+    var y = 0;
+    var sub_x = 0;
+    var sub_y = 0;
+    while(true) {
+	sub_x = x;
+	sub_y = y;
+	while(sub_x >= 0 && sub_y < rows) {
+	    drawCell(sub_x, sub_y, matrix[sub_x][sub_y]);
+	    sub_x --;
+	    sub_y ++;
+	}
+	if(x < cols - 1) {
+	    x++;
+	} else if (y < rows - 1) {
+	    y++;
+	} else {
+	    break;
 	}
     }
 }
