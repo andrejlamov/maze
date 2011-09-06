@@ -6,18 +6,21 @@ var right   = 2;
 var up      = 4;
 var down    = 8;
 var visited = 16;
+var drawn   = 32;
 
 var w = c.width;
 var h = c.height;
 
-var rows = 20;
-var cols = 20;
+var rows = 5;
+var cols = 5;
 
 var wpx = w / cols;
 var hpx = h / rows / 2;
 
 var dx = 0;
 var dy = 0;
+var tx = 0;
+var ty = 1;
 
 var matrix = [];
 
@@ -50,12 +53,16 @@ function keydownhandler(e) {
     var direction = 0;
     if (char == "W" && !(matrix[dx][dy] & up)) {
 	dy--;
+	ty--;
     } else if (char == "A" && !(matrix[dx][dy] & left)) {
 	dx--;
+	tx--;
     } else if (char == "S" && !(matrix[dx][dy] & down)) {
 	dy++;
+	ty++;
     } else if (char == "D" && !(matrix[dx][dy] & right)) {
 	dx++;
+	tx++;
     }
     repaint();
 }
@@ -106,20 +113,20 @@ function drawMaze() {
     var sub_x = 0;
     var sub_y = 0;
     while(true) {
-	sub_x = x;
+       sub_x = x;
 	sub_y = y;
 	while(sub_x >= 0 && sub_y < rows) {
-	    drawCell(sub_x, sub_y, matrix[sub_x][sub_y]);
-	    sub_x --;
-	    sub_y ++;
-	}
+           drawCell(sub_y, sub_x);
+           sub_x --;
+           sub_y ++;
+       }
 	if(x < cols - 1) {
-	    x++;
-	} else if (y < rows - 1) {
-	    y++;
-	} else {
-	    break;
-	}
+           x++;
+       } else if (y < rows - 1) {
+           y++;
+       } else {
+           break;
+       }
     }
 }
 
@@ -134,7 +141,8 @@ function drawFloor() {
     cx.fill();
 }
 
-function drawCell(x, y, status) {
+function drawCell(x, y) {
+    var status = matrix[x][y];
     function maybeDraw(px, py, x, y, maybe) {
     if (maybe & (left | right)) {
 	cx.fillStyle = "rgb(200,200,200)";
@@ -161,19 +169,30 @@ function drawCell(x, y, status) {
     cx.lineWidth = 2;
     cx.strokeStyle = "rgb(230, 230, 230)";
     cx.translate(x * wpx / 2 - y * wpx / 2, x * hpx / 2 + y * hpx / 2);
-    maybeDraw(0, -hpx/2, wpx/2, 0, up);
-    maybeDraw(-wpx/2, 0, 0, -hpx/2, left);
-    if(dx == x && dy == y) {
+    if (!(status & drawn)) {
+	maybeDraw(0, -hpx/2, wpx/2, 0, up);
+	maybeDraw(-wpx/2, 0, 0, -hpx/2, left);
+    } else {
+	matrix[x][y] &= ~drawn;
+    }
+    if(x == dx && y == dy)  {
+	cx.restore();
+	drawCell(tx,ty);
+	matrix[tx][ty] |= drawn;
+	cx.save();
+	cx.translate(x * wpx / 2 - y * wpx / 2, x * hpx / 2 + y * hpx / 2);
 	drawDude();
     }
     maybeDraw(0, hpx/2, -wpx/2, 0, down);
     maybeDraw(wpx/2, 0, 0, hpx/2, right);
     cx.restore();
+
 }
 
 function drawDude() {
     cx.save();
-    cx.translate(0, -hpx/6 + Math.sin((new Date()).getTime()/70) * hpx / 6);
+    cx.translate((0.5 + Math.sin((new Date()).getTime()/150) / 2) * -wpx/2,
+		 (0.5 + Math.sin((new Date()).getTime()/150) / 2) * hpx / 2);
     cx.fillStyle = "rgb(200,0,0)";
     cx.fillRect(-wpx/4, -hpx, 2 * wpx/4,  hpx);
     cx.fillStyle = "rgb(0, 0, 0)";
