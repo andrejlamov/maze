@@ -21,6 +21,10 @@ var dy = 0;
 var tx = 0;
 var ty = 0;
 
+var fps = 0;
+var fpsCount = 0;
+var fpsStamp = 0;
+
 var matrix = [];
 
 function init() {
@@ -36,7 +40,7 @@ function init() {
     window.requestAnimationFrame(repaint);
 }
 
-function repaint() {
+function repaint(ts) {
     cx.clearRect(0,0,w, h);
     cx.save();
     cx.translate(w / 2, h / 4);
@@ -45,6 +49,12 @@ function repaint() {
     drawDude()
     drawAxes()
     cx.restore();
+    if(ts > fpsStamp) {
+        fps = fpsCount;
+        fpsStamp = ts+1000;
+        fpsCount = 0;
+    }
+    fpsCount++;
     window.requestAnimationFrame(repaint)
 }
 
@@ -152,10 +162,17 @@ function drawMaze() {
 }
 
 function drawAxes() {
+    cx.fillStyle = "black";
+    cx.save()
+    cx.translate(-15,-60);
+    cx.fillText(fps + " FPS", 0, 15);
+    cx.restore()
+
     cx.save()
     cx.translate(-30 + cols * wpx / 2 - rows * wpx / 2, 20 + cols * hpx / 2 + rows * hpx / 2);
-    cx.fillStyle = "black";
+
     cx.fillText("W,A,S,D to move", 0, 0);
+
     cx.restore()
 
 }
