@@ -16,10 +16,7 @@ var cols = 20;
 var wpx = w / cols;
 var hpx = h / rows / 2;
 
-var dx = 0;
-var dy = 0;
-var tx = 0;
-var ty = 0;
+var dudes = [];
 
 var fps = 0;
 var fpsCount = 0;
@@ -28,6 +25,9 @@ var fpsStamp = 0;
 var matrix = [];
 
 function init() {
+    dudes.push({dx:0, dy:0, tx:0 , ty:0, color: "rgb(0,200,0)", keys: "&%('"}); // Arrow keys
+    dudes.push({dx:0, dy:0, tx:0 , ty:0, color: "rgb(200,0,0)", keys: "WASD"});
+
     for(var x = 0; x < cols; x++) {
         matrix.push([]);
         for(var y = 0; y < rows; y++) {
@@ -46,7 +46,7 @@ function repaint(ts) {
     cx.translate(w / 2, h / 4);
     drawFloor();
     drawMaze();
-    drawDude()
+    drawDudes()
     drawAxes()
     cx.restore();
     if(ts > fpsStamp) {
@@ -59,24 +59,30 @@ function repaint(ts) {
 }
 
 function keydownhandler(e) {
-    var char = String.fromCharCode(e.which);
-    var direction = 0;
-    if (char == "W" && !(matrix[dx][dy] & up)) {
-        dy--;
-        ty = dy+1;
-        tx = dx
-    } else if (char == "A" && !(matrix[dx][dy] & left)) {
-        dx--;
-        tx = dx+1;
-        ty = dy;
-    } else if (char == "S" && !(matrix[dx][dy] & down)) {
-        dy++;
-        ty = dy-1;
-        tx = dx;
-    } else if (char == "D" && !(matrix[dx][dy] & right)) {
-        dx++;
-        tx = dx-1;
-        ty = dy
+    var c = String.fromCharCode(e.which);
+
+    var idx = 0;
+    while(dudes[idx].keys.indexOf(c) === -1 && idx < dudes.length) {
+        idx++;
+    }
+    var d = dudes[idx];
+    var keyIdx = d.keys.indexOf(c);
+    if (keyIdx == 0 && !(matrix[d.dx][d.dy] & up)) {
+        d.dy--;
+        d.ty = d.dy+1;
+        d.tx = d.dx
+    } else if (keyIdx == 1 && !(matrix[d.dx][d.dy] & left)) {
+        d.dx--;
+        d.tx = d.dx+1;
+        d.ty = d.dy;
+    } else if (keyIdx == 2 && !(matrix[d.dx][d.dy] & down)) {
+        d.dy++;
+        d.ty = d.dy-1;
+        d.tx = d.dx;
+    } else if (keyIdx == 3 && !(matrix[d.dx][d.dy] & right)) {
+        d.dx++;
+        d.tx = d.dx-1;
+        d.ty = d.dy
     }
 }
 
@@ -169,10 +175,10 @@ function drawAxes() {
     cx.restore()
 
     cx.save()
-    cx.translate(-30 + cols * wpx / 2 - rows * wpx / 2, 20 + cols * hpx / 2 + rows * hpx / 2);
+    cx.translate(-20 + cols * wpx / 2 - rows * wpx / 2, 20 + cols * hpx / 2 + rows * hpx / 2);
 
-    cx.fillText("W,A,S,D to move", 0, 0);
-
+    cx.fillText("W,A,S,D to move red", 0, 0);
+    cx.fillText("Arrows to move green", 0, 10);
     cx.restore()
 
 }
@@ -199,13 +205,17 @@ function redraw(x, y, direction) {
     }
 }
 
-function drawDude() {
-    paintDude(dx, dy)
-    var dirx = dx-tx
-    var diry = dy-ty
-
-    redraw(tx, ty, down | right)
-    redraw(dx, dy, down | right)
+function drawDudes() {
+    dudes.sort(function(a, b){
+        return (a.dx + a.dy) - (b.dx + b.dy);
+    });
+    dudes.forEach(function(d) {
+        paintDude(d.dx, d.dy, d.tx, d.ty, d.color);
+        var dirx = d.dx-d.tx;
+        var diry = d.dy-d.ty;
+        redraw(d.tx, d.ty, down | right);
+        redraw(d.dx, d.dy, down | right);
+    });
 }
 
 function drawCell(x, y, repaint) {
@@ -262,15 +272,15 @@ function drawCell(x, y, repaint) {
     cx.restore();
 }
 
-function paintDude(x, y) {
+function paintDude(dx, dy, tx, ty, rgb) {
 
     cx.save();
-    cx.translate(x * wpx / 2 - y * wpx / 2, x * hpx / 2 + y * hpx / 2);
+    cx.translate(dx * wpx / 2 - dy * wpx / 2, dx * hpx / 2 + dy * hpx / 2);
     if(ty != dy || tx != dx) {
         cx.translate((0.5 + Math.sin((new Date()).getTime()/150) / 2) * ((tx-dx) * wpx / 2 - (ty-dy) * wpx / 2),
                      (0.5 + Math.sin((new Date()).getTime()/150) / 2) * ((tx-dx) * hpx / 2 + (ty-dy) * hpx / 2));
     }
-    cx.fillStyle = "rgb(200,0,0)";
+    cx.fillStyle = rgb;
     cx.fillRect(-wpx/4, -hpx, 2 * wpx/4,  hpx);
     cx.fillStyle = "rgb(0, 0, 0)";
     cx.fillRect(-wpx/6, -hpx/1.2 ,wpx /5, hpx / 3);
