@@ -144,7 +144,15 @@ function redraw(x, y, direction) {
 
 function drawDudes() {
     dudes.sort(function(a, b){
-        return (a.dx + a.dy) - (b.dx + b.dy);
+        var pa = a.dx + a.dy + a.tx + a.ty;
+        var pb = b.dx + b.dy + b.tx + b.ty;
+        if(pa == pb) {
+            var da = a.dx == a.tx ? a.ty : a.tx;
+            var db = b.dx == b.tx ? b.ty : b.tx;
+            return db - da;
+        } else {
+            return pa - pb;
+        }
     });
     dudes.forEach(function(d) {
         paintDude(d.dx, d.dy, d.tx, d.ty, d.color);
