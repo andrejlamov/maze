@@ -1,3 +1,5 @@
+var socket = io();
+
 var c = document.getElementById("theCanvas");
 var cx = c.getContext("2d");
 
