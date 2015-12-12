@@ -248,5 +248,5 @@ socket.on('world', function(d) {
 
 socket.on('update', function(d) {
     dudes = d;
-    drawDudes();
+    repaint(new Date().getTime());
 });
