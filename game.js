@@ -231,6 +231,10 @@ socket.on('world', function(d) {
     cols = d.cols;
     rows = d.rows;
     myid = d.myid;
+
+    wpx = w / cols;
+    hpx = h / rows / 2;
+
     init();
 });
 
