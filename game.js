@@ -247,6 +247,12 @@ socket.on('world', function(d) {
 });
 
 socket.on('update', function(d) {
-    dudes = d;
-    repaint(new Date().getTime());
+    var me = dudes.filter(function(e) {
+        return e.id === myid;
+    })[0];
+    dudes = d.filter(function(e) {
+        return e.id !== myid;
+    });
+    dudes.push(me);
+    repaint(0);
 });
