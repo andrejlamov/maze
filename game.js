@@ -19,6 +19,8 @@ var wpx = w / cols;
 var hpx = h / rows / 2;
 
 var dudes = [];
+var myid = null;
+
 
 var fps = 0;
 var fpsCount = 0;
@@ -26,19 +28,10 @@ var fpsStamp = 0;
 
 var matrix = [];
 
-function init() {
-    dudes.push({dx:0, dy:0, tx:0 , ty:0, color: "rgb(0,200,0)", keys: "&%('"}); // Arrow keys
-    dudes.push({dx:0, dy:0, tx:0 , ty:0, color: "rgb(200,0,0)", keys: "WASD"});
+var keys = "WASD";
 
-    for(var x = 0; x < cols; x++) {
-        matrix.push([]);
-        for(var y = 0; y < rows; y++) {
-            var cell = up | down | left | right;
-            matrix[x].push(cell);
-        }
-    }
+function init() {
     document.onkeydown = keydownhandler;
-    makePath();
     window.requestAnimationFrame(repaint);
 }
 
@@ -62,13 +55,12 @@ function repaint(ts) {
 
 function keydownhandler(e) {
     var c = String.fromCharCode(e.which);
+    var keyIdx = keys.indexOf(c);
 
-    var idx = 0;
-    while(dudes[idx].keys.indexOf(c) === -1 && idx < dudes.length) {
-        idx++;
-    }
-    var d = dudes[idx];
-    var keyIdx = d.keys.indexOf(c);
+    var d = dudes.find(function(d) {
+        return d.id == myid;
+    });
+
     if (keyIdx == 0 && !(matrix[d.dx][d.dy] & up)) {
         d.dy--;
         d.ty = d.dy+1;
@@ -86,64 +78,8 @@ function keydownhandler(e) {
         d.tx = d.dx-1;
         d.ty = d.dy
     }
-}
 
-function makePath() {
-    // Implements a randomized Prim's algorithm (from Wikipedia)
-    // Start with a grid full of walls.
-
-    var directionVectors = {
-        [up]:    [0, -1],
-        [right]: [1,  0],
-        [down]:  [0,  1],
-        [left]:  [-1, 0]
-    }
-
-    function maskOut(x, y, direction) {
-        matrix[x][y] &= (up|right|down|left|visited) ^ direction;
-    }
-
-    // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list.
-    var frontier = [[0, 0, right], [0, 0, down]];
-
-    // While there are walls in the list:
-    while (frontier.length) {
-        // Pick (and remove) a random wall from the list and a random direction.
-        var current = frontier.splice(Math.floor(Math.random() * frontier.length), 1)[0];
-
-        var x = current[0];
-        var y = current[1];
-        var direction = current[2];
-
-        // Get the cell in that direction
-        var dv = directionVectors[direction];
-        var x_ = dv[0] + x;
-        var y_ = dv[1] + y;
-
-        // If the cell in that direction isn't in the maze yet (and is part of the maze):
-        if (x_ >= 0 && x_ < rows && y_ >= 0 && y_ < cols
-            && !(matrix[x_][y_] & visited)) {
-
-            // Make the wall a passage and mark the cell on the opposite side as part of the maze.
-            switch (direction) {
-            case up:    maskOut(x, y, up);    maskOut(x_, y_, down);  break;
-            case right: maskOut(x, y, right); maskOut(x_, y_, left);  break;
-            case down:  maskOut(x, y, down);  maskOut(x_, y_, up);    break;
-            case left:  maskOut(x, y, left);  maskOut(x_, y_, right); break;
-            default: throw Exception('Bad spot');
-            }
-
-            // Add the neighboring walls of the cell to the wall list.
-            frontier.push([x_, y_, up]);
-            frontier.push([x_, y_, right]);
-            frontier.push([x_, y_, down]);
-            frontier.push([x_, y_, left]);
-
-            // Mark both cells as visited
-            matrix[x][y]   |= visited;
-            matrix[x_][y_] |= visited;
-        }
-    }
+    socket.emit('dudes', dudes);
 }
 
 function drawMaze() {
@@ -177,10 +113,9 @@ function drawAxes() {
     cx.restore()
 
     cx.save()
-    cx.translate(-20 + cols * wpx / 2 - rows * wpx / 2, 20 + cols * hpx / 2 + rows * hpx / 2);
+    cx.translate(-30 + cols * wpx / 2 - rows * wpx / 2, 20 + cols * hpx / 2 + rows * hpx / 2);
 
-    cx.fillText("W,A,S,D to move red", 0, 0);
-    cx.fillText("Arrows to move green", 0, 10);
+    cx.fillText("W,A,S,D to move", 0, 0);
     cx.restore()
 
 }
@@ -290,4 +225,16 @@ function paintDude(dx, dy, tx, ty, rgb) {
     cx.restore();
 }
 
-init();
+socket.on('world', function(d) {
+    matrix = d.matrix;
+    dudes = d.dudes;
+    cols = d.cols;
+    rows = d.rows;
+    myid = d.myid;
+    init();
+});
+
+socket.on('update', function(d) {
+    dudes = d;
+    drawDudes();
+});
