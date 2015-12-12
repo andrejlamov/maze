@@ -1,5 +1,6 @@
 { "dependencies" :
   {  "socket.io" : "latest"
      , "node-static" : "latest"
+     , "just.randomcolor": "latest"
   }
 }
