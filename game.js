@@ -254,5 +254,4 @@ socket.on('update', function(d) {
         return e.id !== myid;
     });
     dudes.push(me);
-    repaint(0);
 });
