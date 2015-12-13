@@ -79,7 +79,7 @@ function keydownhandler(e) {
         d.ty = d.dy
     }
 
-    socket.emit('dudes', dudes);
+    socket.emit('update', d);
 }
 
 function drawMaze() {

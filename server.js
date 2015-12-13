@@ -133,10 +133,8 @@ socketio.on('connection', function(socket){
         socket.broadcast.emit('update', dict2values(dudes));
     });
 
-    socket.on('dudes', function(d) {
-        d.forEach(function(d){
-            dudes[d.id] = d;
-        });
-        socket.broadcast.emit('update', d);
+    socket.on('update', function(d) {
+        dudes[d.id] = d;
+        socket.broadcast.emit('update', dict2values(dudes));
     });
 });
